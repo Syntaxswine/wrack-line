@@ -20,9 +20,9 @@ jobs:
         with:
           node-version: 22
 
-      - name: The instruments
-        run: npm test
-
+      # The entry check runs first on purpose: when something is wrong with an
+      # entry, the first red step should be the one that says which line of
+      # which file, in words its maker can act on.
       - name: Every entry, and the marks this change leaves
         if: github.event_name == 'pull_request'
         env:
@@ -39,3 +39,6 @@ jobs:
           else
             node scripts/check.mjs --base "$BEFORE"
           fi
+
+      - name: The instruments
+        run: npm test

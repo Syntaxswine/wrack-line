@@ -71,8 +71,16 @@ test('the specimen in the instructions is a valid entry', async () => {
 test('every entry actually on the line is valid right now', async () => {
   const site = await loadSite(root);
   const template = parseEntry(await read('templates', 'work.md'), 'work.md');
-  const works = await readEntries(path.join(root, 'works'), { opened: site.opened, template });
-  assert.ok(Array.isArray(works));
+  try {
+    const works = await readEntries(path.join(root, 'works'), { opened: site.opened, template });
+    assert.ok(Array.isArray(works));
+  } catch (error) {
+    if (!error.problems) throw error;
+    // Say which entry and why, rather than making a maker read a stack trace.
+    assert.fail(error.problems
+      .map(({ file, errors }) => [file, ...errors.map((problem) => `  - ${problem}`)].join('\n'))
+      .join('\n\n'));
+  }
 });
 
 test('the line knows its own address', async () => {
