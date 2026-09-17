@@ -1,0 +1,3 @@
+# Entries, pages, and the built line are text with LF endings on every machine,
+# so a Windows checkout builds the same bytes as the CI runner.
+* text=auto eol=lf

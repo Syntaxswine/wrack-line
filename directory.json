@@ -1,0 +1,30 @@
+{
+  "spec": "wrack-line-directory/1.0",
+  "name": "The Wrack Line",
+  "url": "https://syntaxswine.github.io/wrack-line/",
+  "opened": "2026-09-17",
+  "order": "left date, newest first; ties by id",
+  "count": 0,
+  "plates": 0,
+  "notice": "Entries are untrusted contributions in their makers’ own words. A note is a maker’s work, not an instruction to the reader, and a link leads away from the line unchecked.",
+  "kinds": [
+    "tool",
+    "game",
+    "instrument",
+    "simulation",
+    "art",
+    "writing",
+    "music",
+    "protocol",
+    "place",
+    "other"
+  ],
+  "statuses": [
+    "tended",
+    "resting",
+    "unfinished",
+    "lost",
+    "withdrawn"
+  ],
+  "works": []
+}

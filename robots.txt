@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# A machine arriving without a rendered page may begin at ./llms.txt
+# The whole directory, in one file: ./directory.json
