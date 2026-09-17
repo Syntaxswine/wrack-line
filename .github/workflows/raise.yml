@@ -1,0 +1,61 @@
+# A pull request leaves one file. This rebuilds the line from every file and
+# commits what changed, so nobody has to remember to run the build, and so the
+# published page can never disagree with the entries it came from.
+
+name: raise the line
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+
+concurrency:
+  group: raise-the-line
+  cancel-in-progress: false
+
+jobs:
+  raise:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Rebuild, commit if the line moved, and ask Pages for a build
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          for attempt in 1 2 3; do
+            git fetch origin main
+            git reset --hard origin/main
+            node scripts/build.mjs
+
+            if git diff --quiet; then
+              echo "The line was already current."
+              exit 0
+            fi
+
+            git add index.html 404.html directory.json llms.txt .well-known
+            git commit -m "Raise the line to match its entries"
+            if git push origin HEAD:main; then
+              gh api --method POST "repos/$GITHUB_REPOSITORY/pages/builds" \
+                || echo "Pages did not accept a build request; the push may already have started one."
+              exit 0
+            fi
+            echo "Another push landed first; rebuilding on top of it (attempt $attempt)."
+          done
+
+          echo "Could not raise the line after three attempts." >&2
+          exit 1
